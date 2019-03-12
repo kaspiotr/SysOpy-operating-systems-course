@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sys/resource.h>
 #include <time.h>
+#include <dlfcn.h>
 #include "find.h"
 
 void print_time(double time) {
@@ -30,6 +31,29 @@ void print_function_execution_time(char* function_name, clock_t real_start, cloc
 
 int main(int argc, char **argv) {
 
+    void* bib_handle = dlopen("./libfind.so", RTLD_LAZY);
+    if(!bib_handle)
+    {
+        fprintf(stderr, "error while loading library:\n");
+        fprintf(stderr, "%s\n", dlerror());
+        exit(1);
+    }
+
+    void (*d_create_blocks_array)(blocks_array*, int);
+    d_create_blocks_array = dlsym(bib_handle, "create_blocks_array");
+
+    void (*d_save_find_result_to_temp_file)(char*, char*, char*);
+    d_save_find_result_to_temp_file = dlsym(bib_handle, "save_find_result_to_temp_file");
+
+    void (*d_remove_block)(blocks_array*, int);
+    d_remove_block = dlsym(bib_handle, "remove_block");
+
+    void (*d_save_temp_file_to_block)(blocks_array*, char*);
+    d_save_temp_file_to_block = dlsym(bib_handle, "save_temp_file_to_block");
+
+    void (*d_delete_blocks_array)(blocks_array*);
+    d_delete_blocks_array = dlsym(bib_handle, "delete_blocks_array");
+
     if (argc < 2) {
         fprintf(stderr, "wrong input format\n");
         exit(1);
@@ -46,7 +70,7 @@ int main(int argc, char **argv) {
 
         real_start = clock();
         getrusage(RUSAGE_SELF, &ru_start);
-        create_blocks_array(&array, array_size);
+        d_create_blocks_array(&array, array_size);
         real_end = clock();
         getrusage(RUSAGE_SELF, &ru_end);
         sys_start = ru_start.ru_stime;
@@ -62,6 +86,7 @@ int main(int argc, char **argv) {
 
     int i = 3;
     while (i < argc) {
+        char *buffer = argv[i];
 
         if (strcmp(argv[i], "search_directory") == 0) {
             char* directory_path = argv[i+1];
@@ -70,7 +95,7 @@ int main(int argc, char **argv) {
 
             real_start = clock();
             getrusage(RUSAGE_SELF, &ru_start);
-            save_find_result_to_temp_file(directory_path, file_name, temp_file_name);
+            d_save_find_result_to_temp_file(directory_path, file_name, temp_file_name);
             real_end = clock();
             getrusage(RUSAGE_SELF, &ru_end);
             sys_start = ru_start.ru_stime;
@@ -85,7 +110,7 @@ int main(int argc, char **argv) {
 
             real_start = clock();
             getrusage(RUSAGE_SELF, &ru_start);
-            remove_block(&array, index);
+            d_remove_block(&array, index);
             real_end = clock();
             getrusage(RUSAGE_SELF, &ru_end);
             sys_start = ru_start.ru_stime;
@@ -100,7 +125,7 @@ int main(int argc, char **argv) {
 
             real_start = clock();
             getrusage(RUSAGE_SELF, &ru_start);
-            save_temp_file_to_block(&array, temp_file_name);
+            d_save_temp_file_to_block(&array, temp_file_name);
             real_end = clock();
             getrusage(RUSAGE_SELF, &ru_end);
             sys_start = ru_start.ru_stime;
@@ -115,7 +140,7 @@ int main(int argc, char **argv) {
 
     real_start = clock();
     getrusage(RUSAGE_SELF, &ru_start);
-    delete_blocks_array(&array);
+    d_delete_blocks_array(&array);
     real_end = clock();
     getrusage(RUSAGE_SELF, &ru_end);
     sys_start = ru_start.ru_stime;
@@ -124,5 +149,6 @@ int main(int argc, char **argv) {
     user_end = ru_end.ru_utime;
     print_function_execution_time("delete_blocks_array", real_start, real_end, sys_start, sys_end, user_start, user_end);
 
+    dlclose(bib_handle);
     return 0;
 }

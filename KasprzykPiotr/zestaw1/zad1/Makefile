@@ -18,6 +18,13 @@ shared: find.c find.h
 	$(CC) -shared -fPIC -o libfind.so find.o # tworzenie dynamicznej bibilioteki libfind.so na podstawie plikow object find.o
 	$(CC) -c find_test.c # utworzenie pliku find_test.o typu object
 	$(CC) -o find_test_dynamic find_test.o -L. -lfind -Wl,-rpath,.
+
+# tworzenie programu do testowania find_test_dll wykorzystujacego biblioteke ladowana dynamicznie
+dll: find.c find_test.c find.h
+	$(CC) -c -fPIC find.c -o find.o
+	$(CC) -shared -o libfind.so find.o
+	$(CC) find_test_with_dll.c -o find_test_dll -ldl
+
 # usuwanie plikow object oraz programow do testowania biblioteki statycznej i dynamicznej find
 clean:
-	rm *.o find_test_* *.so 
+	rm *.o *.so find_test_dll 
