@@ -1,3 +1,1 @@
-create_table 100
-search_directory /etc/ *.so tempfile.txt
-remove_block 10
+create_table 100 search_directory /etc/ *.so tempfile.txt save_temp_file_to_block tempfile.txt

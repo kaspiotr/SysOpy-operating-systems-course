@@ -1,2 +1,4 @@
-find: paths must precede expression: instructions_list.txt
-Usage: find [-H] [-L] [-P] [-Olevel] [-D help|tree|search|stat|rates|opt|exec|time] [path...] [expression]
+find: ‘/etc/ssl/private’: Permission denied
+/etc/alternatives/x86_64-linux-gnu_libvdpau_nvidia.so
+find: ‘/etc/polkit-1/localauthority’: Permission denied
+find: ‘/etc/cups/ssl’: Permission denied
