@@ -28,6 +28,45 @@ void print_function_execution_time(char* function_name, clock_t real_start, cloc
     printf("\n");
 }
 
+void log_print_time_to_file(FILE *file_pointer, double time) {
+    int minutes = (int) (time / 60);
+    double seconds = time - minutes * 60;
+    fprintf(file_pointer, "%dm %.9fs\n", minutes, seconds);
+}
+
+void clear_file(char** file_name) {
+    FILE *file_pointer;
+    file_pointer = fopen(file_name, "w+");
+    fprintf(file_pointer, "");
+    fclose(file_pointer);
+}
+
+void log_function_execution_time_to_file(char* file_name, char* function_name, clock_t real_start, clock_t real_end, struct timeval sys_start, struct timeval sys_end, struct timeval user_start, struct timeval user_end) {
+
+    FILE *file_pointer;
+    file_pointer = fopen(file_name, "a");
+
+    char file_content[100];
+    stpcpy(file_content, function_name);
+    strcat(file_content, " function execution time:\n");
+
+    strcat(file_content, "real:\t");
+    fprintf(file_pointer, file_content);
+    log_print_time_to_file(file_pointer, ((double) real_end - real_start) / CLOCKS_PER_SEC);
+
+    stpcpy(file_content, "system:\t");
+    fprintf(file_pointer, file_content);
+    log_print_time_to_file(file_pointer, count_time_range(sys_end, sys_start));
+
+    stpcpy(file_content, "user:\t");
+    fprintf(file_pointer, file_content);
+    log_print_time_to_file(file_pointer, count_time_range(user_end, user_start));
+    stpcpy(file_content, "\n");
+    fprintf(file_pointer, file_content);
+
+    fclose(file_pointer);
+}
+
 int main(int argc, char **argv) {
 
     if (argc < 2) {
@@ -41,6 +80,7 @@ int main(int argc, char **argv) {
     struct rusage ru_start, ru_end;
     struct timeval sys_start, sys_end, user_start, user_end;
 
+    clear_file("report2.txt");
     if (strcmp(argv[1], "create_table") == 0) {
         array_size = atoi(argv[2]);
 
@@ -54,6 +94,7 @@ int main(int argc, char **argv) {
         sys_end = ru_end.ru_stime;
         user_end = ru_end.ru_utime;
         print_function_execution_time("create_table", real_start, real_end, sys_start, sys_end, user_start, user_end);
+        log_function_execution_time_to_file("report2.txt", "create_table", real_start, real_end, sys_start, sys_end, user_start, user_end);
 
     } else {
         fprintf(stderr, "cannot perform any further operations on uninitialized table\n");
@@ -78,6 +119,7 @@ int main(int argc, char **argv) {
             sys_end = ru_end.ru_stime;
             user_end = ru_end.ru_utime;
             print_function_execution_time("save_find_result_to_temp_file", real_start, real_end, sys_start, sys_end, user_start, user_end);
+            log_function_execution_time_to_file("report2.txt", "save_find_result_to_temp_file", real_start, real_end, sys_start, sys_end, user_start, user_end);
 
             i += 4;
         } else if (strcmp(argv[i], "remove_block") == 0) {
@@ -93,6 +135,7 @@ int main(int argc, char **argv) {
             sys_end = ru_end.ru_stime;
             user_end = ru_end.ru_utime;
             print_function_execution_time("remove_block", real_start, real_end, sys_start, sys_end, user_start, user_end);
+            log_function_execution_time_to_file("report2.txt", "remove_block", real_start, real_end, sys_start, sys_end, user_start, user_end);
 
             i += 2;
         } else if (strcmp(argv[i], "save_temp_file_to_block") == 0) {
@@ -108,6 +151,7 @@ int main(int argc, char **argv) {
             sys_end = ru_end.ru_stime;
             user_end = ru_end.ru_utime;
             print_function_execution_time("save_temp_file_to_block", real_start, real_end, sys_start, sys_end, user_start, user_end);
+            log_function_execution_time_to_file("report2.txt", "save_temp_file_to_block", real_start, real_end, sys_start, sys_end, user_start, user_end);
 
             i += 2;
         }
@@ -123,6 +167,7 @@ int main(int argc, char **argv) {
     sys_end = ru_end.ru_stime;
     user_end = ru_end.ru_utime;
     print_function_execution_time("delete_blocks_array", real_start, real_end, sys_start, sys_end, user_start, user_end);
+    log_function_execution_time_to_file("report2.txt", "delete_blocks_array", real_start, real_end, sys_start, sys_end, user_start, user_end);
 
     return 0;
 }

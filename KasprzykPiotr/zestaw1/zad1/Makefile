@@ -28,4 +28,4 @@ dll: find.c find_test.c find.h
 
 # usuwanie plikow object oraz programow do testowania biblioteki statycznej i dynamicznej find
 clean:
-	rm *.o *.so find_test_dll find_test_static find_test_shared 
+	rm *.o *.so find_test_dll find_test_static find_test_shared report2.txt
