@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -std=c99 -Wall
 
 # tworzenie programu do testowania find_test_static wykorzystujacego biblioteke statyczna find
 static: find_test.o find.o
