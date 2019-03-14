@@ -5,7 +5,7 @@
 #include <time.h>
 #include "find.h"
 
-const char *report_file = "raport2.txt";
+char *report_file = "raport2.txt";
 
 void print_time(double time) {
     int minutes = (int) (time / 60);
@@ -39,7 +39,7 @@ void log_print_time_to_file(FILE *file_pointer, double time) {
 void clear_file(char* file_name) {
     FILE *file_pointer;
     file_pointer = fopen(file_name, "w+");
-    fprintf(file_pointer, "");
+    fprintf(file_pointer, "%s", "");
     fclose(file_pointer);
 }
 
@@ -53,18 +53,18 @@ void log_function_execution_time_to_file(char* file_name, char* function_name, c
     strcat(file_content, " function execution time:\n");
 
     strcat(file_content, "real:\t");
-    fprintf(file_pointer, file_content);
+    fprintf(file_pointer, "%s", file_content);
     log_print_time_to_file(file_pointer, ((double) real_end - real_start) / CLOCKS_PER_SEC);
 
     stpcpy(file_content, "system:\t");
-    fprintf(file_pointer, file_content);
+    fprintf(file_pointer, "%s", file_content);
     log_print_time_to_file(file_pointer, count_time_range(sys_end, sys_start));
 
     stpcpy(file_content, "user:\t");
-    fprintf(file_pointer, file_content);
+    fprintf(file_pointer, "%s", file_content);
     log_print_time_to_file(file_pointer, count_time_range(user_end, user_start));
     stpcpy(file_content, "\n");
-    fprintf(file_pointer, file_content);
+    fprintf(file_pointer, "%s", file_content);
 
     fclose(file_pointer);
 }
