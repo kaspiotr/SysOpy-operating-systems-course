@@ -6,7 +6,7 @@
 #include <dlfcn.h>
 #include "find.h"
 
-char *report_file = "raport3a.txt";
+char *report_file = "raport3b.txt";
 
 void print_time(double time) {
     int minutes = (int) (time / 60);

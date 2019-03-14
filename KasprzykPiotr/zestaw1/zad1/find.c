@@ -85,5 +85,8 @@ void save_find_result_to_temp_file(char *directory_path, char *file_name, char *
     strcat(command, temp_file_name);
     strcat(command, " 2>&1");
     printf("%s\n", command);
-    system(command);
+    int returned_value = system(command);
+    if (returned_value == -1) {
+        fprintf(stderr, "given commend is incorrect\n");
+    }
 }
