@@ -91,6 +91,6 @@ void save_find_result_to_temp_file(char *directory_path, char *file_name, char *
     strcat(command, " > ");
     strcat(command, temp_file_name);
     strcat(command, " 2>&1");
-//    printf("%s\n", command);
+    printf("%s\n", command);
     system(command);
 }
