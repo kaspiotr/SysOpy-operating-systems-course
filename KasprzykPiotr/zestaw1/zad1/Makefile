@@ -26,6 +26,16 @@ dll: find.c find_test.c find.h
 	$(CC) -shared -o libfind.so find.o
 	$(CC) find_test_with_dll.c -o find_test_dll -ldl
 
-# usuwanie plikow object oraz programow do testowania biblioteki statycznej i dynamicznej find
+# uruchamianie testow
+test_static: static
+	./find_test_static create_table 300 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+test_shared: shared
+	./find_test_shared create_table 300 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+test_dll: dll
+	./find_test_dll create_table 300 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+# usuwanie plikow object oraz programow do testowania biblioteki statycznej, shared i dynamicznej find
 clean:
-	rm *.o *.so find_test_dll find_test_static find_test_shared report2.txt
+	rm *.o *.so find_test_dll find_test_static find_test_shared raport2.txt raport3a.txt raport3b.txt

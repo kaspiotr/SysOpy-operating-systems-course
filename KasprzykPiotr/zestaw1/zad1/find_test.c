@@ -5,7 +5,7 @@
 #include <time.h>
 #include "find.h"
 
-char *report_file = "raport2.txt";
+char *report_file = "raport3a.txt";
 
 void print_time(double time) {
     int minutes = (int) (time / 60);
@@ -191,7 +191,7 @@ int main(int argc, char **argv) {
     sys_end = ru_end.ru_stime;
     user_end = ru_end.ru_utime;
     print_function_execution_time("delete_blocks_array", real_start, real_end, sys_start, sys_end, user_start, user_end);
-    log_function_execution_time_to_file("report2.txt", "delete_blocks_array", real_start, real_end, sys_start, sys_end, user_start, user_end);
+    log_function_execution_time_to_file(report_file, "delete_blocks_array", real_start, real_end, sys_start, sys_end, user_start, user_end);
 
     return 0;
 }

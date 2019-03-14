@@ -1,11 +1,43 @@
 Przeprowadzenie przeszukania katalogow o roznych poziomach zaglebien i roznych liczbach zawartych plikow (omownie - dla zawierającego malo, srednia liczbe i duzo plikow i podkatalogow)
 oraz zapisanie w pamieci blokow o roznych rozmiarach (odpowiadajacych rozmiarom roznych przeprowadzonych przeszukiwan):
-KATALOG Z MALA ZAWARTOSCIA KATALOGOW I PLIKOW:
-./find_test_static create_table 100 search_directory /etc/ "*.so" tempfile.txt save_temp_file_to_block tempfile.txt
-KATALOG ZE SREDNIA ZAWARTOSCIA KATALOGOW I PLIKOW:
-./find_test_static create_table 100 search_directory /etc/ "*" tempfile.txt save_temp_file_to_block tempfile.txt
-KATALOG Z DUZA ZAWARTOSCIA KATALOGOW I PLIKOW:
-./find_test_static create_table 100 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt
+
+KOMENDY DO PLIKU raport2.txt:
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK STATYCZNYCH I KATALOGU Z MALA ZAWARTOSCIA KATALOGOW I PLIKOW:
+./find_test_static create_table 300 search_directory /etc/ "*.so" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK STATYCZNYCH I KATALOGU Z SREDNIA ZAWARTOSCIA KATALOGOW I PLIKOW:
+./find_test_static create_table 300 search_directory /etc/ "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK STATYCZNYCH I KATALOGU Z DUZA ZAWARTOSCIA KATALOGOW I PLIKOW:
+./find_test_static create_table 300 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK DZIELONYCH (DYNAMICZNIE, LADOWANE PRZY URUCHOMIENIU PROGRAMU) I KATALOGU Z MALA ZAWARTOSCIA KATALOGOW I PLIKOW:
+./find_test_shared create_table 300 search_directory /etc/ "*.so" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK DZIELONYCH (DYNAMICZNIE, LADOWANE PRZY URUCHOMIENIU PROGRAMU) I KATALOGU Z SREDNIA ZAWARTOSCIA KATALOGOW I PLIKOW:
+./find_test_shared create_table 300 search_directory /etc/ "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK DZIELONYCH (DYNAMICZNIE, LADOWANE PRZY URUCHOMIENIU PROGRAMU) I KATALOGU Z DUZA ZAWARTOSCIA KATALOGOW I PLIKOW:
+./find_test_shared create_table 300 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK LADOWANYCH DYNAMICZNIE (DYNAMICZNE, LADOWANE PRZEZ PROGRAM) I KATALOGU Z MALA ZAWARTOSCIA KATALOGOW I PLIKOW:
+./find_test_dll create_table 300 search_directory /etc/ "*.so" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK LADOWANYCH DYNAMICZNIE (DYNAMICZNE, LADOWANE PRZEZ PROGRAM) I KATALOGU Z SREDNIA ZAWARTOSCIA KATALOGOW I PLIKOW:
+./find_test_dll create_table 300 search_directory /etc/ "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK LADOWANYCH DYNAMICZNIE (DYNAMICZNE, LADOWANE PRZEZ PROGRAM) I KATALOGU Z DUZA ZAWARTOSCIA KATALOGOW I PLIKOW:
+./find_test_dll create_table 300 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+KOMENDY DO PLIKU raport3a.txt
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK STATYCZNYCH:
+./find_test_static create_table 300 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK DZIELONYCH (DYNAMICZNIE, LADOWANE PRZY URUCHOMIENIU PROGRAMU):
+./find_test_shared create_table 300 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
+
+WYNIKI DLA PROGRAMU Z WYKORZYSTANIEM BIBLIOTEK LADOWANYCH DYNAMICZNIE (DYNAMICZNE, LADOWANE PRZEZ PROGRAM):
+./find_test_dll create_table 300 search_directory / "*" tempfile.txt save_temp_file_to_block tempfile.txt remove_block 0 repeat_save_to_block_and_remove tempfile.txt 1000000
 
 Na przemian  kilkakrotne dodanie i usuniecie zadanej liczby blokow:
-./find_test_static create_table 300 search_directory / "*" tempfile.txt repeat_save_to_block_and_remove tempfile.txt 30
+./find_test_static create_table 300 search_directory / "*" tempfile.txt repeat_save_to_block_and_remove tempfile.txt 300

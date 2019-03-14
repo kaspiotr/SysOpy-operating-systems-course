@@ -34,6 +34,11 @@ int save_temp_file_to_block(blocks_array *array, char *temp_file_name) {
         i++;
     }
 
+    if (i == blocks_array_size) {
+        fprintf(stderr, "array of blocks is already full\n");
+        return -1;
+    }
+
     struct stat sb;
     int file_size = 0;
     if (stat(temp_file_name, &sb) == -1) {
@@ -67,18 +72,6 @@ int save_temp_file_to_block(blocks_array *array, char *temp_file_name) {
     }
 
     array -> block_sizes[i] = file_size;
-//    printf("adres array->blocks[i] to %p\n", array->blocks[i]);
-//
-//    printf("Czytamy spod tego adresu w petli i mamy:\n");
-//    printf("file_size wynosi %d\n", file_size);
-//
-//    char ch;
-//    int j=0;
-//    while(j < file_size) {
-//        ch = array->blocks[i][j++];
-//        printf("%c", ch);
-//    }
-//    printf("%d", i);
     return i;
 }
 
