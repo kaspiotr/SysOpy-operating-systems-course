@@ -4,6 +4,68 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/resource.h>
+
+char *report_file = "wyniki.txt";
+/**
+ * Counts time range (utility function)
+ * @param end_time
+ * @param start_time
+ * @return time range
+ */
+double count_time_range(struct timeval end_time, struct timeval start_time) {
+    double tmp_end_time = ((double) end_time.tv_sec) + (((double) end_time.tv_usec) / 1000000);
+    double tmp_start_time = ((double) start_time.tv_sec) + (((double) start_time.tv_usec) / 1000000);
+    return tmp_end_time - tmp_start_time;
+}
+
+/**
+ * Logs time to a file pointed out by file_pointer (utility function)
+ * @param file_pointer pointer to a file
+ * @param time to be logged into file
+ */
+void log_print_time_to_file(FILE *file_pointer, double time) {
+    int minutes = (int) (time / 60);
+    double seconds = time - minutes * 60;
+    fprintf(file_pointer, "%dm %.9fs\n", minutes, seconds);
+}
+
+/**
+ * Logs execution time of function to a given file (utility function)
+ * @param file_name name of the file where execution time will be logged
+ * @param function_name
+ * @param real_start
+ * @param real_end
+ * @param sys_start
+ * @param sys_end
+ * @param user_start
+ * @param user_end
+ */
+void log_function_execution_time_to_file(char* file_name, char* function_name, clock_t real_start, clock_t real_end, struct timeval sys_start, struct timeval sys_end, struct timeval user_start, struct timeval user_end) {
+
+    FILE *file_pointer;
+    file_pointer = fopen(file_name, "a");
+
+    char file_content[100];
+    stpcpy(file_content, function_name);
+    strcat(file_content, " function execution time:\n");
+
+    strcat(file_content, "real:\t");
+    fprintf(file_pointer, "%s", file_content);
+    log_print_time_to_file(file_pointer, ((double) real_end - real_start) / CLOCKS_PER_SEC);
+
+    stpcpy(file_content, "system:\t");
+    fprintf(file_pointer, "%s", file_content);
+    log_print_time_to_file(file_pointer, count_time_range(sys_end, sys_start));
+
+    stpcpy(file_content, "user:\t");
+    fprintf(file_pointer, "%s", file_content);
+    log_print_time_to_file(file_pointer, count_time_range(user_end, user_start));
+    stpcpy(file_content, "\n");
+    fprintf(file_pointer, "%s", file_content);
+
+    fclose(file_pointer);
+}
 
 /**
  * Populates given record with char's (a - z) in number of record_size_in_bytes
@@ -349,16 +411,42 @@ int main(int argc, char **argv) {
 
     srand(time(NULL));
 
+    clock_t real_start, real_end;
+    struct rusage ru_start, ru_end;
+    struct timeval sys_start, sys_end, user_start, user_end;
+
+    if(argc < 2) {
+        fprintf(stderr, "wrong program arguments format\n");
+        exit(-1);
+    }
+
     if (strcmp(argv[1], "generate") == 0) {
         generate(argc, argv);
     } else if (strcmp(argv[1], "sort") == 0) {
+        real_start = clock();
+        getrusage(RUSAGE_SELF, &ru_start);
         sort(argc, argv);
+        real_end = clock();
+        getrusage(RUSAGE_SELF, &ru_end);
+        sys_start = ru_start.ru_stime;
+        user_start = ru_start.ru_utime;
+        sys_end = ru_end.ru_stime;
+        user_end = ru_end.ru_utime;
+        log_function_execution_time_to_file(report_file, "sort", real_start, real_end, sys_start, sys_end, user_start, user_end);
 
     } else if (strcmp(argv[1], "copy") == 0) {
-
+        real_start = clock();
+        getrusage(RUSAGE_SELF, &ru_start);
         copy(argc, argv);
-    } else {
+        real_end = clock();
+        getrusage(RUSAGE_SELF, &ru_end);
+        sys_start = ru_start.ru_stime;
+        user_start = ru_start.ru_utime;
+        sys_end = ru_end.ru_stime;
+        user_end = ru_end.ru_utime;
+        log_function_execution_time_to_file(report_file, "copy", real_start, real_end, sys_start, sys_end, user_start, user_end);
 
+    } else {
         fprintf(stderr, "unknown command: %s\n", argv[1]);
         exit(-1);
     }
