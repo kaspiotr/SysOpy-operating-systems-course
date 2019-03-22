@@ -15,8 +15,10 @@ struct tm date_argument;
  * Prints help with examplary program calls
  */
 void print_help() {
-    printf("exemplary program call: ./program2 . '<' 'mar 21 2019' search_directory\n");
-    printf("exemplary program call: ./program2 /etc/ '=' 'january 1 2017' nftw\n");
+    printf("exemplary program call: ./program2 /etc/ '>' 'mar 19 2019' search_directory\n");
+    printf("exemplary program call: ./program2 /tmp/ '>' 'mar 19 2019' search_directory\n");
+    printf("exemplary program call: ./program2 /etc/ '>' 'mar 19 2019' nftw\n");
+    printf("exemplary program call: ./program2 /tmp/ '>' 'mar 19 2019' nftw\n");
 }
 
 /**
@@ -45,8 +47,10 @@ int dates_comparison(struct tm* file_date, struct tm* user_date) {
 void process_file(const char *file_path_buffer, const struct stat *stat_buffer) {
     struct tm *stat_date_recent_modification;
     struct tm *stat_date_recent_access;
+    int stat_file_type;
     stat_date_recent_modification = localtime(&(stat_buffer->st_mtime));
     stat_date_recent_access = localtime(&(stat_buffer->st_atime));
+    stat_file_type = stat_buffer->st_mode;
 
     // file is not processed if file recent modification date does not satisfy defined by operator time range
     if (dates_comparison(stat_date_recent_modification, &date_argument) != operator)
@@ -62,9 +66,34 @@ void process_file(const char *file_path_buffer, const struct stat *stat_buffer) 
     char recent_access_date_string[20];
     strftime(recent_access_date_string, 20, "%b %d %Y", localtime(&(stat_buffer -> st_atime)));
 
+
     printf("File: %s\n", file_path_buffer);
-    printf(())
     printf("-type: ");
+    switch (stat_file_type & S_IFMT) {
+        case S_IFREG:
+            printf("regular file");
+            break;
+        case S_IFDIR: //not used
+            printf("directory");
+            break;
+        case S_IFCHR:
+            printf("character device");
+            break;
+        case S_IFBLK:
+            printf("block device");
+            break;
+        case S_IFLNK: //not used
+            printf("symbolic link");
+            break;
+        case S_IFIFO: //not used
+            printf("pipe");
+            break;
+        case S_IFSOCK:
+            printf("socket");
+            break;
+        default:
+            printf("unknown");
+    }
     printf("\t-size: %ld", stat_buffer->st_size);
     printf("\t-modification date: %s", recent_modification_date_string);
     printf("\t-access date: %s\n\n", recent_access_date_string);
@@ -118,8 +147,8 @@ void search_directory(char *directory_path_buffer, int *directory_path_buffer_si
             exit(-1);
         }
 
-        // processing regular files
-        if (S_ISREG(stat_buffer.st_mode)) {
+        // processing regular files, socket files, character device files, block device files,
+        if (S_ISREG(stat_buffer.st_mode) || S_ISSOCK(stat_buffer.st_mode) || S_ISCHR(stat_buffer.st_mode) || S_ISBLK(stat_buffer.st_mode)) {
             process_file(directory_path_buffer, &stat_buffer);
         } else { //processing directories recursively
             search_directory(directory_path_buffer, directory_path_buffer_size);
